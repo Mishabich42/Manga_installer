@@ -1,3 +1,4 @@
+from reportlab.lib.pagesizes import letter
 from reportlab.lib.utils import ImageReader
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -10,14 +11,12 @@ from reportlab.pdfgen import canvas
 from PIL import Image as PilImage
 
 url = 'https://honey-manga.com.ua'
-name = 'Empty'
 
-def download_images():
-    name_manga = input(":")
+
+def download_images(name_manga, select_page):
     # Create a PDF file
     pdf_file = f'{name_manga}.pdf'
-    c = canvas.Canvas(pdf_file)
-
+    c = canvas.Canvas(pdf_file, pagesize=letter)
     # Initialize the webdriver
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')  # Activate headless mode
@@ -44,7 +43,6 @@ def download_images():
         EC.presence_of_all_elements_located((By.XPATH, '//*[@id="__next"]/div/div[3]/div[1]/div[2]/div[2]/a'))
     )
     Button[0].click()
-    select_page = input("from:")
     while True:
         sleep(0.5)
         Page = WebDriverWait(driver, 10).until(
@@ -98,11 +96,7 @@ def download_images():
         except Exception:
             # If the "Next" button is not found, exit the loop
             print("Session ended")
-            c.save()
             break
-
+    c.save()
     # Quit the webdriver
     driver.quit()
-
-# Call the function to download images and create the PDF
-download_images()
